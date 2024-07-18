@@ -1,0 +1,30 @@
+@import './base.css';
+#app{
+    padding: 10px;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 10px;
+}
+.plusicon{
+    margin-bottom: 10px;
+}
+.n-card {
+    border-radius: 5px;
+    max-width: 300px;
+    background-color: rgb(187 201 217 / 20%);
+    color: white;
+}
+.light-green {
+    padding: 30px;
+    background-color: rgba(0, 128, 0, 0.12);
+}
+.cardclss{
+    text-align: center;
+}
+
+.total{
+    margin-top: 25px;
+}
+body.loading {
+    visibility: hidden;
+}
