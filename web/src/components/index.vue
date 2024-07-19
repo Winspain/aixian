@@ -1,25 +1,26 @@
 <template class="loading">
   <n-config-provider :theme="theme">
-    <n-global-style/>
+    <n-global-style />
     <n-card class="notice" size="small">
       <n-switch v-model:value="active" size="small">
         <template #checked-icon>
-          <n-icon :component="Sparkles"/>
+          <n-icon :component="Sparkles" />
         </template>
         <template #unchecked-icon>
-          <n-icon :component="SunnySharp"/>
+          <n-icon :component="SunnySharp" />
         </template>
       </n-switch>
       <div v-html="notice"></div>
-       
+
     </n-card>
-<div v-if="user" class="notice"> 用户：{{user}} &nbsp; &nbsp;  到期时间：{{deadLine}} </div>
+    <div v-if="user" class="notice"> 用户：{{ user }} &nbsp; &nbsp; 到期时间：{{ deadLine }} </div>
     <n-grid x-gap="10" y-gap="10" cols="2 s:3 m:4 l:5 xl:5 2xl:6" responsive="screen">
       <n-grid-item class="cardclss" v-for="item in itemslist" :key="item.carID">
 
-        <n-card size="small" content-style="boxclass" :content-class="'boxclass ' + (item.isPlus ? 'pluscolor' : 'nopluscolor')" @click="redirectTo(item.carID)">
+        <n-card size="small" content-style="boxclass"
+          :content-class="'boxclass ' + (item.isPlus ? 'pluscolor' : 'nopluscolor')" @click="redirectTo(item.carID)">
 
-          <div class="type" :style="{ background: item.labelColor }">{{ item.label != ""? item.label: "NO" }}</div>
+          <div class="type" :style="{ background: item.labelColor }">{{ item.label != "" ? item.label : "NO" }}</div>
 
           <div class="cartitle">
             <n-text class="title">{{ item.carID }}</n-text>
@@ -28,7 +29,8 @@
           <div class="message-with-dot">实时状态：{{ item.message }}</div>
 
           <div :style="{ width: '100%' }">
-            <a-progress :show-text="false" :steps="4" :color=item.color :percent="item.bai" :track-color="(item.labelColor)" stroke-width='30'/>
+            <a-progress :show-text="false" :steps="4" :color=item.color :percent="item.bai"
+              :track-color="(item.labelColor)" stroke-width='30' />
           </div>
 
         </n-card>
@@ -90,7 +92,7 @@
 
 .boxclass:hover {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .pluscolor:hover {
@@ -128,7 +130,7 @@
 }
 
 
-.notice{
+.notice {
   background-color: rgb(187 201 217 / 20%);
   border: 1px solid transparent;
   padding: 8px;
@@ -140,9 +142,9 @@
 
 <script lang="ts">
 import axios from 'axios';
-import {darkTheme} from 'naive-ui'
-import type {GlobalTheme} from 'naive-ui'
-import {Sparkles, SunnySharp} from '@vicons/ionicons5'
+import { darkTheme } from 'naive-ui'
+import type { GlobalTheme } from 'naive-ui'
+import { Sparkles, SunnySharp } from '@vicons/ionicons5'
 import qs from "qs";
 
 export default defineComponent({
@@ -155,8 +157,8 @@ export default defineComponent({
       page: 1,
       isLoading: false,
       hasMoreData: true,
-      deadLine:"",
-      user:""
+      deadLine: "",
+      user: ""
     };
   },
   computed: {
@@ -203,7 +205,7 @@ export default defineComponent({
       restoreTheme();
       document.body.classList.remove('loading');
     });
-    return {theme, active, Sparkles, SunnySharp};
+    return { theme, active, Sparkles, SunnySharp };
     return {
       theme,
       active,
@@ -223,98 +225,98 @@ export default defineComponent({
     fetchData: async function () {
       if (!this.hasMoreData || this.isLoading) return;
       this.isLoading = true; // 开始加载，设置为true
-     axios.get('/api/auth/session').then((userdata)=>{
-      
-      if(!userdata.data?.accessToken) return;
-       axios({
-        method:"post",
-        url:"/aixian/v1/user",
-        params:'',     
-        data:{
+      axios.get('/api/auth/session').then((userdata) => {
+
+        if (!userdata.data?.accessToken) return;
+        axios({
+          method: "post",
+          url: "/aixian/v1/user",
+          params: '',
+          data: {
             userToken: userdata.data?.accessToken
-         }
-      } ).then((res)=>{
-        this.deadLine = res.data.expireTime.replace('T',' ')
-        this.user = res.data.userToken
+          }
+        }).then((res) => {
+          this.deadLine = res.data.expireTime.replace('T', ' ')
+          this.user = res.data.userToken
+        })
       })
-     })
-      
 
 
-       
+
+
 
 
       axios.post('/carpage', {
         page: this.page,
         size: 50
       })
-          .then(response => {
-            if (response.data.data.list === null) {
-              this.hasMoreData = false;
-              this.isLoading = false;
-            } else {
-              this.notice = response.data.notice;
-              let baseUrl = window.location.origin;
-              let promises = response.data.data.list.map(item => {
-                let carname = encodeURIComponent(`${item.carID}`);
-                let endpointUrl = `${baseUrl}/endpoint?carid=${carname}`;
-                let statusUrl = `${baseUrl}/status?carid=${carname}`;
-
-                // 并行发起 endpoint 和 status 请求
-                let endpointPromise = fetch(endpointUrl)
-                    .then(response => response.json())
-                    .catch(error => {
-                      console.error('Error fetching endpoint data:', error);
-                      return {};
-                    });
-
-                let statusPromise = fetch(statusUrl)
-                    .then(response => response.json())
-                    .catch(error => {
-                      console.error('Error fetching status data:', error);
-                      return {};
-                    });
-                return Promise.all([endpointPromise, statusPromise]).then(([endpointData, statusData]) => {
-                  function replaceStopRunning(text) {
-                    return text.replace("PLUS停运｜", "")
-                        .replace("TEAM停运｜", "")
-                        .replace("停运｜", "")
-                        .replace("|", "-")
-                        .replace("green", "#f9bd5f")
-                        .replace("yellow", "#f9bd5f")
-                        .replace("red", "#f65e5d")
-                        .replace("PLUS", "Plus")
-                        .replace("blue", "#24d4ae")
-                        .replace("purple", "#a07be6");
-                  }
-
-                  for (let key in endpointData) {
-                    if (typeof endpointData[key] === 'string') {
-                      endpointData[key] = replaceStopRunning(endpointData[key]);
-                    }
-                  }
-                  let loadbai = item.isPlus == true ? (statusData.count / 80) * 1 : (statusData.count / 500) * 1;
-                  let bai = loadbai > 0.2 ? loadbai : 0;
-                  return {...item, ...endpointData, ...statusData, bai: bai.toFixed(5)};
-                });
-              });
-
-              Promise.all(promises).then(newItems => {
-                const existingIds = new Set(this.itemslist.map(item => item.carID));
-                const filteredItems = newItems.filter(item => !existingIds.has(item.carID));
-                this.itemslist = [...this.itemslist, ...filteredItems];
-                this.page += 1;
-              }).catch(error => {
-                console.error('请求错误:', error);
-              });
-            }
-          })
-          .catch(error => {
-            console.error('请求错误:', error);
-          })
-          .finally(() => {
+        .then(response => {
+          if (response.data.data.list === null) {
+            this.hasMoreData = false;
             this.isLoading = false;
-          })
+          } else {
+            this.notice = response.data.notice;
+            let baseUrl = window.location.origin;
+            let promises = response.data.data.list.map(item => {
+              let carname = encodeURIComponent(`${item.carID}`);
+              let endpointUrl = `${baseUrl}/endpoint?carid=${carname}`;
+              let statusUrl = `${baseUrl}/status?carid=${carname}`;
+
+              // 并行发起 endpoint 和 status 请求
+              let endpointPromise = fetch(endpointUrl)
+                .then(response => response.json())
+                .catch(error => {
+                  console.error('Error fetching endpoint data:', error);
+                  return {};
+                });
+
+              let statusPromise = fetch(statusUrl)
+                .then(response => response.json())
+                .catch(error => {
+                  console.error('Error fetching status data:', error);
+                  return {};
+                });
+              return Promise.all([endpointPromise, statusPromise]).then(([endpointData, statusData]) => {
+                function replaceStopRunning(text) {
+                  return text.replace("PLUS停运｜", "")
+                    .replace("TEAM停运｜", "")
+                    .replace("停运｜", "")
+                    .replace("|", "-")
+                    .replace("green", "#f9bd5f")
+                    .replace("yellow", "#f9bd5f")
+                    .replace("red", "#f65e5d")
+                    .replace("PLUS", "Plus")
+                    .replace("blue", "#24d4ae")
+                    .replace("purple", "#a07be6");
+                }
+
+                for (let key in endpointData) {
+                  if (typeof endpointData[key] === 'string') {
+                    endpointData[key] = replaceStopRunning(endpointData[key]);
+                  }
+                }
+                let loadbai = item.isPlus == true ? (statusData.count / 80) * 1 : (statusData.count / 500) * 1;
+                let bai = loadbai > 0.2 ? loadbai : 0;
+                return { ...item, ...endpointData, ...statusData, bai: bai.toFixed(5) };
+              });
+            });
+
+            Promise.all(promises).then(newItems => {
+              const existingIds = new Set(this.itemslist.map(item => item.carID));
+              const filteredItems = newItems.filter(item => !existingIds.has(item.carID));
+              this.itemslist = [...this.itemslist, ...filteredItems];
+              this.page += 1;
+            }).catch(error => {
+              console.error('请求错误:', error);
+            });
+          }
+        })
+        .catch(error => {
+          console.error('请求错误:', error);
+        })
+        .finally(() => {
+          this.isLoading = false;
+        })
     },
     handleScroll() {
       const scrollHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
