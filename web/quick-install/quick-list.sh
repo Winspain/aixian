@@ -5,7 +5,6 @@ set -e
 echo "clone repository..."
 git clone https://github.com/Winspain/aixian.git carlist
 
-cd carlist/web
 
 # 设置目录名
 dir_name="list"
@@ -20,7 +19,9 @@ else
     chmod -R 755 "$dir_name"
     echo "已创建目录 '$dir_name' 并设置权限为 755。"
 fi
-mv dist/* ../list
+
+cd carlist/web
+mv dist/* ../../list
 cd ..
 chmod -R 755 list
 
