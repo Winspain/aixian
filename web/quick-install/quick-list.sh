@@ -22,7 +22,7 @@ fi
 
 cd carlist/web
 mv dist/* ../../list
-cd ..
+cd ../..
 chmod -R 755 list
 
 yaml_file="./docker-compose.yml"
