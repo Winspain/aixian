@@ -10,11 +10,11 @@ git clone https://github.com/Winspain/aixian.git carlist
 dir_name="list"
 # 检查目录是否存在
 if [ -d "$dir_name" ]; then
-    # 目录存在，删除其下的所有文件
+    echo "目录存在，删除其下的所有文件"
     rm -rf "${dir_name:?}"/*
     echo "已删除 '$dir_name' 下的所有文件。"
 else
-    # 目录不存在，创建目录并设置权限
+    echo "目录不存在，创建目录并设置权限"
     mkdir "$dir_name"
     chmod -R 755 "$dir_name"
     echo "已创建目录 '$dir_name' 并设置权限为 755。"
