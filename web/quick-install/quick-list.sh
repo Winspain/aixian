@@ -92,6 +92,8 @@ add_volume "$check_volume_list_js" "      - $check_volume_list_js"
 
 rm -rf carlist
 docker compose pull
-docker compose up -d --remove-orphans
+docker rm -f chatgpt-share_chatgpt-share-server_1 || true
+docker-compose up -d --no-recreate
+
 ## 提示信息
 echo "已完成前端页面的更换"
