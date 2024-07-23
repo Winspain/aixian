@@ -40,7 +40,6 @@ fi
 if grep -q "$check_volume" "$yaml_file"; then
     echo "映射 '$check_volume' 已存在，无需添加。"
     rm -rf carlist
-    rm -rf quick-list.sh
     echo "已完成前端页面的更换"
     exit 0
 fi
@@ -78,7 +77,6 @@ else
 fi
 
 rm -rf carlist
-rm -rf quick-list.sh
 docker compose pull
 docker compose up -d --remove-orphans
 ## 提示信息

@@ -145,7 +145,8 @@ import axios from 'axios';
 import { darkTheme } from 'naive-ui'
 import type { GlobalTheme } from 'naive-ui'
 import { Sparkles, SunnySharp } from '@vicons/ionicons5'
-import qs from "qs";
+import { defineComponent, watch, onMounted } from 'vue';
+import { ref } from 'vue';
 
 export default defineComponent({
   data() {
@@ -236,16 +237,11 @@ export default defineComponent({
             userToken: userdata.data?.accessToken
           }
         }).then((res) => {
-          this.deadLine = res.data.expireTime.replace('T', ' ')
+          this.deadLine = res.data.expireTime.replace(/T|Z/g, '')
+          localStorage.setItem('deadline', this.deadLine)
           this.user = res.data.userToken
         })
       })
-
-
-
-
-
-
       axios.post('/carpage', {
         page: this.page,
         size: 50
