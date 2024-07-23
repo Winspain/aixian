@@ -7,6 +7,8 @@ git clone https://github.com/Winspain/aixian.git carlist
 
 # 设置目录名
 dir_name="list"
+custom_dir="custom"
+
 # 检查目录是否存在
 if [ -d "$dir_name" ]; then
     echo "目录存在，删除其下的所有文件"
@@ -17,6 +19,18 @@ else
     mkdir "$dir_name"
     chmod -R 755 "$dir_name"
     echo "已创建目录 '$dir_name' 并设置权限为 755。"
+fi
+
+# 检查custom目录是否存在
+if [ -d "$custom_dir/public" ]; then
+    echo "custom/public 目录存在，删除其下的所有文件"
+    rm -rf "${custom_dir:?}/public"/*
+    echo "已删除 '$custom_dir/public' 下的所有文件。"
+else
+    echo "custom/public 目录不存在，创建目录并设置权限"
+    mkdir -p "$custom_dir/public"
+    chmod -R 755 "$custom_dir/public"
+    echo "已创建目录 '$custom_dir/public' 并设置权限为 755。"
 fi
 
 cd carlist/web
