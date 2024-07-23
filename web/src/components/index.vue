@@ -237,7 +237,7 @@ export default defineComponent({
             userToken: userdata.data?.accessToken
           }
         }).then((res) => {
-          this.deadLine = res.data.expireTime.replace(/T|Z/g, '')
+          this.deadLine = res.data.expireTime.replace(/T/g, ' ').replace(/Z/g, '')
           localStorage.setItem('deadline', this.deadLine)
           this.user = res.data.userToken
         })
