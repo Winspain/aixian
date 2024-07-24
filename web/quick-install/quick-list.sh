@@ -35,7 +35,7 @@ fi
 
 cd carlist/web
 mv dist/* ../../list
-mv /src/custom/list.js ../../custom/public
+mv src/custom/list.js ../../custom/public
 cd ../..
 chmod -R 755 list
 

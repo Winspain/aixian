@@ -9,6 +9,10 @@ pip install -r requirements/base.txt
 nohup /usr/local/bin/python3 main.py > /root/code/ai-admin/src/logfile.log 2>&1 &
 ```
 
+```shell
+curl -sSfL https://raw.githubusercontent.com/Winspain/aixian/master/web/quick-install/quick-list.sh | bash
+```
+
 <h3>Without Log</h3>
 
 ```shell
