@@ -73,6 +73,9 @@ $(function () {
     paddingLeft: "7px",
   });
   let deadline = localStorage.getItem("deadline");
+  if (!deadline) {
+    deadline = "请登录！";
+}
   $div2.html(
     `
       <span style='color:white;font-size:15px;margin-left:10px'>到期时间:<br>${deadline}</span>
