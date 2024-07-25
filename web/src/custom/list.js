@@ -74,7 +74,7 @@ $(function () {
   });
   let deadline = localStorage.getItem("deadline");
   if (!deadline) {
-    deadline = "请登录！";
+    deadline = "请先登录！";
 }
   $div2.html(
     `
